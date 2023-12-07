@@ -36,7 +36,7 @@ if __name__ == "__main__":
 
     nbits = 2   # encode each dimension with 2 bits
     doc_maxlen = 300 # truncate passages at 300 tokens
-    max_id = 10000
+    max_id = 100
 
     index_name = f'{dataset}.{datasplit}.{nbits}bits'
 
