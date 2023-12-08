@@ -2,7 +2,7 @@ from datasets import load_dataset
 
 from colbert import Indexer, Searcher
 from colbert.infra import Run, RunConfig, ColBERTConfig
-
+#test
 if __name__ == "__main__":
 
     dataset = 'lifestyle'
