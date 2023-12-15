@@ -4,6 +4,10 @@
 /logs/
 /mlruns/
 /profiler/
+/build/
+/ColBERT.egg-info/
+/venv/
+/dist/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
