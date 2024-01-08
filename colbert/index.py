@@ -1,13 +1,13 @@
 import os
-import ujson
 import random
 
-from colbert.utils.runs import Run
-from colbert.utils.parser import Arguments
-import colbert.utils.distributed as distributed
+import ujson
 
-from colbert.utils.utils import print_message, create_directory
+import colbert.utils.distributed as distributed
 from colbert.indexing.encoder import CollectionEncoder
+from colbert.utils.parser import Arguments
+from colbert.utils.runs import Run
+from colbert.utils.utils import print_message, create_directory
 
 
 def main():
@@ -19,7 +19,7 @@ def main():
     parser.add_model_inference_parameters()
     parser.add_indexing_input()
 
-    parser.add_argument('--chunksize', dest='chunksize', default=6.0, required=False, type=float)   # in GiBs
+    parser.add_argument('--chunksize', dest='chunksize', default=6.0, required=False, type=float)  # in GiBs
 
     args = parser.parse()
 

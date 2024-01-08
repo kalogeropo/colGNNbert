@@ -1,6 +1,5 @@
-import torch
-
 from transformers import BertTokenizerFast
+
 from colbert.modeling.tokenization.utils import _split_into_batches, _sort_by_length
 
 

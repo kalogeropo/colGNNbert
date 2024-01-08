@@ -1,12 +1,9 @@
-import os
-import math
-import torch
-import ujson
-import traceback
-
 from itertools import accumulate
+
+import torch
+
 from colbert.parameters import DEVICE
-from colbert.utils.utils import print_message, dotdict, flatten
+from colbert.utils.utils import print_message
 
 BSIZE = 1 << 14
 
@@ -158,7 +155,7 @@ class IndexRanker():
 
 
 def torch_percentile(tensor, p):
-    assert p in range(1, 100+1)
+    assert p in range(1, 100 + 1)
     assert tensor.dim() == 1
 
     return tensor.kthvalue(int(p * tensor.size(0) / 100.0)).values.item()

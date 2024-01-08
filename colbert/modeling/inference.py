@@ -2,8 +2,8 @@ import torch
 
 from colbert.modeling.colbert import ColBERT
 from colbert.modeling.tokenization import QueryTokenizer, DocTokenizer
-from colbert.utils.amp import MixedPrecisionManager
 from colbert.parameters import DEVICE
+from colbert.utils.amp import MixedPrecisionManager
 
 
 class ModelInference():

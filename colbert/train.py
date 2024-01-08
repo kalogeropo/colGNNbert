@@ -1,13 +1,6 @@
-import os
-import random
-import torch
-import copy
-
-import colbert.utils.distributed as distributed
-
+from colbert.training.training import train
 from colbert.utils.parser import Arguments
 from colbert.utils.runs import Run
-from colbert.training.training import train
 
 
 def main():

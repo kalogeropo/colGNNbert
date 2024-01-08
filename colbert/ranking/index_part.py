@@ -1,14 +1,9 @@
-import os
 import torch
-import ujson
 
-from math import ceil
-from itertools import accumulate
-from colbert.utils.utils import print_message, dotdict, flatten
-
-from colbert.indexing.loaders import get_parts, load_doclens
 from colbert.indexing.index_manager import load_index_part
+from colbert.indexing.loaders import get_parts, load_doclens
 from colbert.ranking.index_ranker import IndexRanker
+from colbert.utils.utils import print_message, flatten
 
 
 class IndexPart():

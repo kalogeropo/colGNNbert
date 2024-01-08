@@ -1,10 +1,11 @@
 import string
+
 import torch
 import torch.nn as nn
-
 from transformers import BertPreTrainedModel, BertModel, BertTokenizerFast
-from colbert.parameters import DEVICE
+
 from colbert.gnn.ranker import GNNRanker
+from colbert.parameters import DEVICE
 
 
 class ColBERT(BertPreTrainedModel):
@@ -68,7 +69,7 @@ class ColBERT(BertPreTrainedModel):
             return self.gnn.predict(Q @ D.permute(0, 2, 1))
 
         assert self.similarity_metric == 'l2'
-        return (-1.0 * ((Q.unsqueeze(2) - D.unsqueeze(1))**2).sum(-1)).max(-1).values.sum(-1)
+        return (-1.0 * ((Q.unsqueeze(2) - D.unsqueeze(1)) ** 2).sum(-1)).max(-1).values.sum(-1)
 
     def mask(self, input_ids):
         mask = [[(x not in self.skiplist) and (x != 0) for x in d] for d in input_ids.cpu().tolist()]

@@ -1,18 +1,15 @@
-import os
-import time
-import torch
 import queue
 import threading
-
 from collections import defaultdict
 
-from colbert.utils.runs import Run
-from colbert.modeling.inference import ModelInference
-from colbert.evaluation.ranking_logger import RankingLogger
+import torch
 
-from colbert.utils.utils import print_message, flatten, zipstar
+from colbert.evaluation.ranking_logger import RankingLogger
 from colbert.indexing.loaders import get_parts
+from colbert.modeling.inference import ModelInference
 from colbert.ranking.index_part import IndexPart
+from colbert.utils.runs import Run
+from colbert.utils.utils import print_message, flatten, zipstar
 
 MAX_DEPTH_LOGGED = 1000  # TODO: Use args.depth
 

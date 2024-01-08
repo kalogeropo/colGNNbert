@@ -1,9 +1,8 @@
 import os
-import torch
 
-from colbert.utils.runs import Run
-from colbert.utils.utils import print_message, save_checkpoint
 from colbert.parameters import SAVED_CHECKPOINTS
+from colbert.utils.runs import Run
+from colbert.utils.utils import save_checkpoint
 
 
 def print_progress(scores):

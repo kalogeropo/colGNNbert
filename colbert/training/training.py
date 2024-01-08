@@ -1,23 +1,20 @@
-import os
 import random
 import time
+
+import numpy as np
 import torch
 import torch.nn as nn
-import numpy as np
-
 from transformers import AdamW
-from colbert.utils.runs import Run
-from colbert.utils.amp import MixedPrecisionManager
-
-from colbert.training.lazy_batcher import LazyBatcher
-from colbert.training.eager_batcher import EagerBatcher
-from colbert.parameters import DEVICE
-
-from colbert.modeling.colbert import ColBERT
-from colbert.utils.utils import print_message
-from colbert.training.utils import print_progress, manage_checkpoints
 
 from colbert.gnn.ranker import GNNRanker
+from colbert.modeling.colbert import ColBERT
+from colbert.parameters import DEVICE
+from colbert.training.eager_batcher import EagerBatcher
+from colbert.training.lazy_batcher import LazyBatcher
+from colbert.training.utils import print_progress, manage_checkpoints
+from colbert.utils.amp import MixedPrecisionManager
+from colbert.utils.runs import Run
+from colbert.utils.utils import print_message
 
 
 def train(args):
@@ -110,7 +107,7 @@ def train(args):
         amp.step(colbert, optimizer)
 
         if args.rank < 1:
-            avg_loss = train_loss / (batch_idx+1)
+            avg_loss = train_loss / (batch_idx + 1)
 
             num_examples_seen = (batch_idx - start_batch_idx) * args.bsize * args.nranks
             elapsed = float(time.time() - start_time)
@@ -122,7 +119,7 @@ def train(args):
             Run.log_metric('train/throughput', num_examples_seen / elapsed, step=batch_idx, log_to_mlflow=log_to_mlflow)
 
             print_message(batch_idx, avg_loss)
-            manage_checkpoints(args, colbert, optimizer, batch_idx+1)
+            manage_checkpoints(args, colbert, optimizer, batch_idx + 1)
 
     if args.gnn:
         gnn = GNNRanker()

@@ -1,11 +1,10 @@
-import os
+from functools import partial
+
 import ujson
 
-from functools import partial
-from colbert.utils.utils import print_message
 from colbert.modeling.tokenization import QueryTokenizer, DocTokenizer, tensorize_triples
-
 from colbert.utils.runs import Run
+from colbert.utils.utils import print_message
 
 
 class LazyBatcher():

@@ -1,13 +1,12 @@
+import __main__
 import os
 import sys
 import time
-import __main__
-import traceback
+from contextlib import contextmanager
+
 import mlflow
 
 import colbert.utils.distributed as distributed
-
-from contextlib import contextmanager
 from colbert.utils.logging import Logger
 from colbert.utils.utils import timestamp, create_directory, print_message
 

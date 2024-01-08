@@ -1,20 +1,14 @@
 import os
 import random
-import time
+
 import torch
-import torch.nn as nn
-
-from itertools import accumulate
-from math import ceil
-
-from colbert.utils.runs import Run
-from colbert.utils.utils import print_message
 
 from colbert.evaluation.metrics import Metrics
 from colbert.evaluation.ranking_logger import RankingLogger
-from colbert.modeling.inference import ModelInference
-
 from colbert.evaluation.slow import slow_rerank
+from colbert.modeling.inference import ModelInference
+from colbert.utils.runs import Run
+from colbert.utils.utils import print_message
 
 
 def evaluate(args):
@@ -62,7 +56,7 @@ def evaluate(args):
 
                     for i, (score, pid, passage) in enumerate(ranking):
                         if pid in qrels[qid]:
-                            print("\n#> Found", pid, "at position", i+1, "with score", score)
+                            print("\n#> Found", pid, "at position", i + 1, "with score", score)
                             print(passage)
                             break
 

@@ -1,10 +1,11 @@
 import os
 import sys
-import ujson
-import mlflow
 import traceback
 
+import mlflow
+import ujson
 from torch.utils.tensorboard import SummaryWriter
+
 from colbert.utils.utils import print_message, create_directory
 
 
@@ -23,7 +24,7 @@ class Logger():
     def _init_mlflow(self):
         mlflow.set_tracking_uri('file://' + os.path.join(self.run.experiments_root, "logs/mlruns/"))
         mlflow.set_experiment('/'.join([self.run.experiment, self.run.script]))
-        
+
         mlflow.set_tag('experiment', self.run.experiment)
         mlflow.set_tag('name', self.run.name)
         mlflow.set_tag('path', self.run.path)

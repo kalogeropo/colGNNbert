@@ -1,12 +1,11 @@
 import os
 import random
 
+from colbert.evaluation.loaders import load_colbert, load_qrels, load_queries, load_topK_pids
+from colbert.ranking.batch_reranking import batch_rerank
+from colbert.ranking.reranking import rerank
 from colbert.utils.parser import Arguments
 from colbert.utils.runs import Run
-
-from colbert.evaluation.loaders import load_colbert, load_qrels, load_queries, load_topK_pids
-from colbert.ranking.reranking import rerank
-from colbert.ranking.batch_reranking import batch_rerank
 
 
 def main():

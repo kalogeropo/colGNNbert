@@ -1,8 +1,4 @@
 import torch
-import faiss
-import numpy as np
-
-from colbert.utils.utils import print_message
 
 
 class IndexManager():
@@ -13,7 +9,7 @@ class IndexManager():
         torch.save(tensor, path_prefix)
 
 
-def load_index_part(filename, verbose=True):
+def load_index_part(filename):
     part = torch.load(filename)
 
     if type(part) == list:  # for backward compatibility

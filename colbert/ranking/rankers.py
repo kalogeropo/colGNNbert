@@ -1,20 +1,11 @@
 import torch
 
-from functools import partial
-
 from colbert.ranking.index_part import IndexPart
-from colbert.ranking.faiss_index import FaissIndex
-from colbert.utils.utils import flatten, zipstar
 
 
 class Ranker():
-    def __init__(self, args, inference, faiss_depth=1024):
+    def __init__(self, args, inference):
         self.inference = inference
-        self.faiss_depth = faiss_depth
-
-        if faiss_depth is not None:
-            self.faiss_index = FaissIndex(args.index_path, args.faiss_index_path, args.nprobe, part_range=args.part_range)
-            self.retrieve = partial(self.faiss_index.retrieve, self.faiss_depth)
 
         self.index = IndexPart(args.index_path, dim=inference.colbert.dim, part_range=args.part_range, verbose=True)
 

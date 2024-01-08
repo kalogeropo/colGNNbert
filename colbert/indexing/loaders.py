@@ -1,10 +1,6 @@
 import os
-import torch
-import ujson
 
-from math import ceil
-from itertools import accumulate
-from colbert.utils.utils import print_message
+import ujson
 
 
 def get_parts(directory):

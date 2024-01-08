@@ -1,6 +1,5 @@
-import torch
-
 from transformers import BertTokenizerFast
+
 from colbert.modeling.tokenization.utils import _split_into_batches
 
 
@@ -25,7 +24,7 @@ class QueryTokenizer():
             return tokens
 
         prefix, suffix = [self.cls_token, self.Q_marker_token], [self.sep_token]
-        tokens = [prefix + lst + suffix + [self.mask_token] * (self.query_maxlen - (len(lst)+3)) for lst in tokens]
+        tokens = [prefix + lst + suffix + [self.mask_token] * (self.query_maxlen - (len(lst) + 3)) for lst in tokens]
 
         return tokens
 
@@ -38,7 +37,7 @@ class QueryTokenizer():
             return ids
 
         prefix, suffix = [self.cls_token_id, self.Q_marker_token_id], [self.sep_token_id]
-        ids = [prefix + lst + suffix + [self.mask_token_id] * (self.query_maxlen - (len(lst)+3)) for lst in ids]
+        ids = [prefix + lst + suffix + [self.mask_token_id] * (self.query_maxlen - (len(lst) + 3)) for lst in ids]
 
         return ids
 

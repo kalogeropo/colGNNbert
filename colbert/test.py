@@ -1,13 +1,11 @@
-import os
 import random
-
-from colbert.utils.parser import Arguments
-from colbert.utils.runs import Run
 
 from colbert.evaluation.loaders import load_colbert, load_topK, load_qrels
 from colbert.evaluation.loaders import load_queries, load_topK_pids, load_collection
-from colbert.evaluation.ranking import evaluate
 from colbert.evaluation.metrics import evaluate_recall
+from colbert.evaluation.ranking import evaluate
+from colbert.utils.parser import Arguments
+from colbert.utils.runs import Run
 
 
 def main():

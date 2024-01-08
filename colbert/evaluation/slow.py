@@ -1,5 +1,3 @@
-import os
-
 def slow_rerank(args, query, pids, passages):
     colbert = args.colbert
     inference = args.inference

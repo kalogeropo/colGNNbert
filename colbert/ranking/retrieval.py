@@ -1,22 +1,18 @@
-import os
-import time
-import faiss
-import random
-import torch
 import itertools
+import time
 
-from colbert.utils.runs import Run
-from multiprocessing import Pool
-from colbert.modeling.inference import ModelInference
+import torch
+
 from colbert.evaluation.ranking_logger import RankingLogger
-
-from colbert.utils.utils import print_message, batch
+from colbert.modeling.inference import ModelInference
 from colbert.ranking.rankers import Ranker
+from colbert.utils.runs import Run
+from colbert.utils.utils import print_message, batch
 
 
 def retrieve(args):
     inference = ModelInference(args.colbert, amp=args.amp)
-    ranker = Ranker(args, inference, faiss_depth=args.faiss_depth)
+    ranker = Ranker(args, inference)
 
     ranking_logger = RankingLogger(Run.path, qrels=None)
     milliseconds = 0
@@ -41,8 +37,8 @@ def retrieve(args):
                 milliseconds += (time.time() - s) * 1000.0
 
                 if len(pids):
-                    print(qoffset+query_idx, q, len(scores), len(pids), scores[0], pids[0],
-                          milliseconds / (qoffset+query_idx+1), 'ms')
+                    print(qoffset + query_idx, q, len(scores), len(pids), scores[0], pids[0],
+                          milliseconds / (qoffset + query_idx + 1), 'ms')
 
                 rankings.append(zip(pids, scores))
 
