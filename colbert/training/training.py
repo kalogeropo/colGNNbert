@@ -17,6 +17,8 @@ from colbert.modeling.colbert import ColBERT
 from colbert.utils.utils import print_message
 from colbert.training.utils import print_progress, manage_checkpoints
 
+from colbert.gnn.ranker import GNNRanker
+
 
 def train(args):
     random.seed(12345)
@@ -121,3 +123,7 @@ def train(args):
 
             print_message(batch_idx, avg_loss)
             manage_checkpoints(args, colbert, optimizer, batch_idx+1)
+
+    if args.gnn:
+        gnn = GNNRanker()
+        gnn.train(args.collection, args.queries, args.relative, save=True)

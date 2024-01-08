@@ -22,7 +22,7 @@ class Arguments():
 
     def add_model_parameters(self):
         # Core Arguments
-        self.add_argument('--similarity', dest='similarity', default='cosine', choices=['cosine', 'l2'])
+        self.add_argument('--similarity', dest='similarity', default='cosine', choices=['cosine', 'l2', 'gnn'])
         self.add_argument('--dim', dest='dim', default=128, type=int)
         self.add_argument('--query_maxlen', dest='query_maxlen', default=32, type=int)
         self.add_argument('--doc_maxlen', dest='doc_maxlen', default=180, type=int)
@@ -42,6 +42,11 @@ class Arguments():
         self.add_argument('--accum', dest='accumsteps', default=2, type=int)
         self.add_argument('--amp', dest='amp', default=False, action='store_true')
 
+        self.add_gnn_training_parameters()
+
+    def add_gnn_training_parameters(self):
+        self.add_argument('--gnn', dest='gnn', default=False)
+
     def add_model_inference_parameters(self):
         self.add_argument('--checkpoint', dest='checkpoint', required=True)
         self.add_argument('--bsize', dest='bsize', default=128, type=int)
@@ -58,6 +63,15 @@ class Arguments():
                 "If neither is supplied, the --triples file must contain texts (not PIDs)."
 
         self.checks.append(check_training_input)
+
+    def add_gnn_training_input(self):
+        self.add_argument('--relative', dest='relative', default=None)
+
+        def check_gnn_training_input(args):
+            if args.gnn:
+                assert args.relative is not None
+
+        self.checks.append(check_gnn_training_input)
 
     def add_ranking_input(self):
         self.add_argument('--queries', dest='queries', default=None)
