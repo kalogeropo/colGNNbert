@@ -1,16 +1,17 @@
-name: colbert-v0.2
+name: colbert
 channels:
   - pytorch
+  - conda-forge
   - defaults
 dependencies:
   - python=3.7
-  - pip=20.2.2
-  - cudatoolkit=10.1
-  - pytorch=1.6.0
-  - torchvision=0.7.0
-  - faiss-gpu=1.6.3
+  - pip
+  - pytorch-cpu
+  - faiss-cpu
   - pip:
+    - future
     - mlflow
+    - Pillow
     - tensorboard
     - tqdm
     - transformers==3.0.2
