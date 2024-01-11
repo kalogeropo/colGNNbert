@@ -30,6 +30,7 @@ class EagerBatcher():
     def __next__(self):
         queries, positives, negatives = [], [], []
 
+        line_cursor = 0
         for line_idx, line in zip(range(self.bsize * self.nranks), self.reader):
             if (self.position + line_idx) % self.nranks != self.rank:
                 continue
@@ -39,8 +40,9 @@ class EagerBatcher():
             queries.append(query)
             positives.append(pos)
             negatives.append(neg)
+            line_cursor = line_idx
 
-        self.position += line_idx + 1
+        self.position += line_cursor + 1
 
         if len(queries) < self.bsize:
             raise StopIteration

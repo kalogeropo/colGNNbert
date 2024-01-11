@@ -90,9 +90,10 @@ def train(args):
 
         reader.skip_to_batch(start_batch_idx, checkpoint['arguments']['bsize'])
 
+    final_batch = start_batch_idx
     for batch_idx, BatchSteps in zip(range(start_batch_idx, args.maxsteps), reader):
         this_batch_loss = 0.0
-
+        print(f"batch: {batch_idx}")
         for queries, passages in BatchSteps:
             with amp.context():
                 scores = colbert(queries, passages).view(2, -1).permute(1, 0)
@@ -123,6 +124,10 @@ def train(args):
 
             print_message(batch_idx, avg_loss)
             manage_checkpoints(args, colbert, optimizer, batch_idx+1)
+            final_batch = batch_idx
+
+    if args.rank < 1:
+        manage_checkpoints(args, colbert, optimizer, final_batch + 1)
 
     if args.gnn:
         gnn = GNNRanker()

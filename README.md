@@ -88,6 +88,18 @@ colbert.train --amp --doc_maxlen 180 --mask-punctuation --bsize 32 --accum 1 \
 
 You can use one or more GPUs by modifying `CUDA_VISIBLE_DEVICES` and `--nproc_per_node`.
 
+### Training on CPU
+
+To train the model on a CPU you need to set `--local_rank argument -1` and `amp` is not supported.
+
+You should also make sure that you have set the torch device to `cpu` in `colbert/parameters.py`.
+
+```
+python -m colbert.train --local_rank -1 --mask-punctuation --similarity l2 \
+--doc_maxlen 180 --bsize 24 --triples triples.tsv \
+--root /root/to/experiments/ --experiment CF --run cystic.l2
+```
+
 
 ## Validation
 
