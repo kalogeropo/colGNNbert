@@ -50,7 +50,8 @@ class CollectionEncoder():
 
     def _load_model(self):
         self.colbert, self.checkpoint = load_colbert(self.args, do_print=(self.process_idx == 0))
-        self.colbert = self.colbert.cuda()
+        # self.colbert = self.colbert.cuda()
+        self.colbert = self.colbert.cpu()
         self.colbert.eval()
 
         self.inference = ModelInference(self.colbert, amp=self.args.amp)

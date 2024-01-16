@@ -31,13 +31,13 @@ def retrieve(args):
             rankings = []
 
             for query_idx, q in enumerate(qbatch_text):
-                torch.cuda.synchronize('cuda:0')
+                #torch.cuda.synchronize('cuda:0')
                 s = time.time()
 
                 Q = ranker.encode([q])
                 pids, scores = ranker.rank(Q)
 
-                torch.cuda.synchronize()
+                #torch.cuda.synchronize()
                 milliseconds += (time.time() - s) * 1000.0
 
                 if len(pids):
