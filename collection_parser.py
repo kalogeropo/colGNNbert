@@ -34,7 +34,7 @@ def get_rel_from_file(relevant_tsv):
     return list_to_group_by
 
 
-def get_retrived_from_file(retrieved_tsv='experiments/cystic_2385/retrieve.py/2024-01-16_18.19.42/ranking.tsv'):
+def get_retrieved_from_file(retrieved_tsv='experiments/cystic_2385/retrieve.py/2024-01-16_18.19.42/ranking.tsv'):
     list_to_group_by = []
     with open(retrieved_tsv, 'r') as f:
         lines = f.readlines()
@@ -45,7 +45,7 @@ def get_retrived_from_file(retrieved_tsv='experiments/cystic_2385/retrieve.py/20
     return list_to_group_by
 
 
-def retrieval_and_rel_parser(tsv_list=None):
+def retrieved_and_rel_parser(tsv_list=None):
     dict ={}
     if tsv_list is None:
         tsv_list = []
