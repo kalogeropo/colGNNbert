@@ -1,7 +1,7 @@
 from os.path import join, exists
 from os import getcwd
 
-from pandas import read_csv
+from pandas import read_csv, DataFrame
 
 
 def get_queries_from_file(queries_tsv):
@@ -42,11 +42,26 @@ def get_retrived_from_file(retrieved_tsv='experiments/cystic_2385/retrieve.py/20
             line = line.split('\t')
             # print(line[0],line[1])
             list_to_group_by.append([int(line[0]), int(line[1])])
+    return list_to_group_by
 
 
 def retrieval_and_rel_parser(tsv_list=None):
+    dict ={}
     if tsv_list is None:
         tsv_list = []
+        return 0
+    #print(tsv_list)
+    prev_id = tsv_list[0][0]
+    lst = []
+    for item in tsv_list:
+        lst.append(item[1])
+        if item[0] != prev_id:
+            dict[item[0]] = lst
+            lst =[]
+        prev_id = item[0]
+    #print(dict.keys())
+    return dict
+
 
 
 class Collection:
@@ -86,6 +101,7 @@ class Collection:
         else:
             print(f'file {join(getcwd(), doc_tsv)} does not exist')
             self.docs = []
+        self.train_test_set = self.create_set()
         self.name = name
         self.path = join(getcwd(), col_path)
 
@@ -93,3 +109,14 @@ class Collection:
             self.num_docs = len(self.docs)
         else:
             print(self.path)
+
+    def create_set(self):
+        test_set = []
+        for item in self.triplets:
+            query = item[0]
+            pos_doc = item[1]
+            neg_doc = item[2]
+            test_set.append([query, pos_doc, 1])
+            test_set.append([query, neg_doc, 0])
+        df = DataFrame(data=test_set, columns=['Query', 'Doc', 'Pos/Neg"'])
+        return df
