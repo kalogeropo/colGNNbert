@@ -178,17 +178,3 @@ Some use cases (e.g., building a user-facing search engines) require more contro
 * v0.2.0: Sep 2020
 * v0.1.0: June 2020
 
-## Notes
-```
-python -m colbert.retrieve \
---bsize 24 \
---queries Queries.tsv\
---index_root indexes/ --index_name  cyst_99_index \
---checkpoint checkpoints/colbert-99.dnn \
---root experiments/ --experiment cystic_2385
-
-python -m colbert.index_faiss \
---index_root indexes/ --index_name cyst_99_index \
---partitions 100 --root experiments/ --experiment cystic_2385
-
-```
