@@ -23,7 +23,7 @@ class CollectionEncoder():
         self.num_processes = num_processes
 
         assert 0.5 <= args.chunksize <= 128.0
-        max_bytes_per_file = args.chunksize * (1024*1024*1024)
+        max_bytes_per_file = args.chunksize * (1024 * 1024 * 1024)
 
         max_bytes_per_doc = (self.args.doc_maxlen * self.args.dim * 2.0)
 
@@ -82,9 +82,9 @@ class CollectionEncoder():
             this_saving_throughput = compute_throughput(len(lines), t2, t3)
 
             self.print(f'#> Completed batch #{batch_idx} (starting at passage #{offset}) \t\t'
-                          f'Passages/min: {overall_throughput} (overall), ',
-                          f'{this_encoding_throughput} (this encoding), ',
-                          f'{this_saving_throughput} (this saving)')
+                       f'Passages/min: {overall_throughput} (overall), ',
+                       f'{this_encoding_throughput} (this encoding), ',
+                       f'{this_saving_throughput} (this saving)')
         self.saver_queue.put(None)
 
         self.print("#> Joining saver thread.")
@@ -179,7 +179,7 @@ def compute_throughput(size, t0, t1):
     throughput = size / (t1 - t0) * 60
 
     if throughput > 1000 * 1000:
-        throughput = throughput / (1000*1000)
+        throughput = throughput / (1000 * 1000)
         throughput = round(throughput, 1)
         return '{}M'.format(throughput)
 

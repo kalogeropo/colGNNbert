@@ -95,6 +95,7 @@ def create_directory(path):
         print_message("#> Creating directory", path, '\n\n')
         os.makedirs(path)
 
+
 # def batch(file, bsize):
 #     while True:
 #         L = [ujson.loads(file.readline()) for _ in range(bsize)]
@@ -166,8 +167,9 @@ def zip_first(L1, L2):
 def int_or_float(val):
     if '.' in val:
         return float(val)
-        
+
     return int(val)
+
 
 def load_ranking(path, types=None, lazy=False):
     print_message(f"#> Loading the ranked lists from {path} ..")
@@ -245,8 +247,10 @@ def grouper(iterable, n, fillvalue=None):
 class NullContextManager(object):
     def __init__(self, dummy_resource=None):
         self.dummy_resource = dummy_resource
+
     def __enter__(self):
         return self.dummy_resource
+
     def __exit__(self, *args):
         pass
 
@@ -267,5 +271,5 @@ def load_batch_backgrounds(args, qids):
 
         x = ' [SEP] '.join(x)
         qbackgrounds.append(x)
-    
+
     return qbackgrounds

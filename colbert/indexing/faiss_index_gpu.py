@@ -2,7 +2,6 @@
     Heavily based on: https://github.com/facebookresearch/faiss/blob/master/benchs/bench_gpu_1bn.py
 """
 
-
 import sys
 import time
 import math
@@ -106,7 +105,7 @@ class FaissIndexGPU():
             i1 = min(i0 + self.add_batch_size, nb)
             xs = data[i0:i1]
 
-            self.gpu_index.add_with_ids(xs, np.arange(offset+i0, offset+i1))
+            self.gpu_index.add_with_ids(xs, np.arange(offset + i0, offset + i1))
 
             if self.max_add > 0 and self.gpu_index.ntotal > self.max_add:
                 self._flush_to_cpu(index, nb, offset)
@@ -117,7 +116,7 @@ class FaissIndexGPU():
         if self.gpu_index.ntotal > 0:
             self._flush_to_cpu(index, nb, offset)
 
-        assert index.ntotal == offset+nb, (index.ntotal, offset+nb, offset, nb)
+        assert index.ntotal == offset + nb, (index.ntotal, offset + nb, offset, nb)
         print(f"add(.) time: %.3f s \t\t--\t\t index.ntotal = {index.ntotal}" % (time.time() - t0))
 
     def _flush_to_cpu(self, index, nb, offset):
@@ -127,7 +126,7 @@ class FaissIndexGPU():
             index_src_gpu = faiss.downcast_index(self.gpu_index if self.ngpu == 1 else self.gpu_index.at(i))
             index_src = faiss.index_gpu_to_cpu(index_src_gpu)
 
-            index_src.copy_subset_to(index, 0, offset, offset+nb)
+            index_src.copy_subset_to(index, 0, offset, offset + nb)
             index_src_gpu.reset()
             index_src_gpu.reserveMemory(self.max_add)
 

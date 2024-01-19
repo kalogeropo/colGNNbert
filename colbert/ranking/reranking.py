@@ -41,8 +41,8 @@ def rerank(args):
                 milliseconds += (time.time() - s) * 1000.0
 
                 if len(pids):
-                    print(qoffset+query_idx, q, len(scores), len(pids), scores[0], pids[0],
-                          milliseconds / (qoffset+query_idx+1), 'ms')
+                    print(qoffset + query_idx, q, len(scores), len(pids), scores[0], pids[0],
+                          milliseconds / (qoffset + query_idx + 1), 'ms')
 
                 rankings.append(zip(pids, scores))
 

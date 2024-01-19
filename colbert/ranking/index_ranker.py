@@ -31,7 +31,7 @@ class IndexRanker():
         print_message(f"#> Using strides {self.strides}..")
 
         self.views = self._create_views(self.tensor)
-        #self.buffers = self._create_buffers(BSIZE, self.tensor.dtype, {'cpu', 'cuda:0'})
+        # self.buffers = self._create_buffers(BSIZE, self.tensor.dtype, {'cpu', 'cuda:0'})
         self.buffers = self._create_buffers(BSIZE, self.tensor.dtype, {'cpu'})
 
     def _create_views(self, tensor):
@@ -159,7 +159,7 @@ class IndexRanker():
 
 
 def torch_percentile(tensor, p):
-    assert p in range(1, 100+1)
+    assert p in range(1, 100 + 1)
     assert tensor.dim() == 1
 
     return tensor.kthvalue(int(p * tensor.size(0) / 100.0)).values.item()

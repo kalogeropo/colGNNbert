@@ -5,7 +5,8 @@ from colbert.utils.utils import NullContextManager
 from packaging import version
 
 v = version.parse
-PyTorch_over_1_6  = v(torch.__version__) >= v('1.6')
+PyTorch_over_1_6 = v(torch.__version__) >= v('1.6')
+
 
 class MixedPrecisionManager():
     def __init__(self, activated):

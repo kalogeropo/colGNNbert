@@ -79,7 +79,7 @@ def index_faiss(args):
             faiss_index_name = get_faiss_index_name(args, offset=part_offset, endpos=part_endpos)
 
         output_path = os.path.join(args.index_path, faiss_index_name)
-        print_message(f"#> Processing slice #{slice_idx+1} of {args.slices} (range {part_offset}..{part_endpos}).")
+        print_message(f"#> Processing slice #{slice_idx + 1} of {args.slices} (range {part_offset}..{part_endpos}).")
         print_message(f"#> Will write to {output_path}.")
 
         assert not os.path.exists(output_path), output_path
@@ -111,6 +111,6 @@ def index_faiss(args):
 
         index.save(output_path)
 
-        print_message(f"\n\nDone! All complete (for slice #{slice_idx+1} of {args.slices})!")
+        print_message(f"\n\nDone! All complete (for slice #{slice_idx + 1} of {args.slices})!")
 
         thread.join()

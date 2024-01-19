@@ -63,7 +63,7 @@ def load_topK(topK_path):
 
     with open(topK_path) as f:
         for line_idx, line in enumerate(f):
-            if line_idx and line_idx % (10*1000*1000) == 0:
+            if line_idx and line_idx % (10 * 1000 * 1000) == 0:
                 print(line_idx, end=' ', flush=True)
 
             qid, pid, query, passage = line.split('\t')
@@ -96,7 +96,7 @@ def load_topK_pids(topK_path, qrels):
 
     with open(topK_path) as f:
         for line_idx, line in enumerate(f):
-            if line_idx and line_idx % (10*1000*1000) == 0:
+            if line_idx and line_idx % (10 * 1000 * 1000) == 0:
                 print(line_idx, end=' ', flush=True)
 
             qid, pid, *rest = line.strip().split('\t')
@@ -157,7 +157,7 @@ def load_collection(collection_path):
 
     with open(collection_path) as f:
         for line_idx, line in enumerate(f):
-            if line_idx % (1000*1000) == 0:
+            if line_idx % (1000 * 1000) == 0:
                 print(f'{line_idx // 1000 // 1000}M', end=' ', flush=True)
 
             pid, passage, *rest = line.strip().split('\t')

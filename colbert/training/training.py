@@ -109,7 +109,7 @@ def train(args):
         amp.step(colbert, optimizer)
 
         if args.rank < 1:
-            avg_loss = train_loss / (batch_idx+1)
+            avg_loss = train_loss / (batch_idx + 1)
 
             num_examples_seen = (batch_idx - start_batch_idx) * args.bsize * args.nranks
             elapsed = float(time.time() - start_time)
@@ -121,7 +121,7 @@ def train(args):
             Run.log_metric('train/throughput', num_examples_seen / elapsed, step=batch_idx, log_to_mlflow=log_to_mlflow)
 
             print_message(batch_idx, avg_loss)
-            manage_checkpoints(args, colbert, optimizer, batch_idx+1)
+            manage_checkpoints(args, colbert, optimizer, batch_idx + 1)
             final_batch = batch_idx
 
     if args.rank < 1:

@@ -20,6 +20,7 @@ class NNRanker:
             q = self.inference.queryFromText(q)
             d = self.inference.docFromText(d)
             return self.inference.scores_matrix(q, d)
+
         similarities = triplets[['Query', 'Doc']].agg(create_similarities_matrix, axis='columns')
 
         self.fit(similarities, triplets['Pos/Neg'])

@@ -39,7 +39,7 @@ class RankingLogger():
 
         for rank, (score, pid, passage) in enumerate(ranking):
             is_relevant = self.qrels and int(pid in self.qrels[qid])
-            rank = rank+1 if is_ranked else -1
+            rank = rank + 1 if is_ranked else -1
 
             possibly_score = [score] if self.log_scores else []
 

@@ -62,7 +62,7 @@ def evaluate(args):
 
                     for i, (score, pid, passage) in enumerate(ranking):
                         if pid in qrels[qid]:
-                            print("\n#> Found", pid, "at position", i+1, "with score", score)
+                            print("\n#> Found", pid, "at position", i + 1, "with score", score)
                             print(passage)
                             break
 
