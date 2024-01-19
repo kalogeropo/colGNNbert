@@ -116,5 +116,5 @@ class Collection:
             neg_doc = item[2]
             test_set.append([query, pos_doc, 1])
             test_set.append([query, neg_doc, 0])
-        df = DataFrame(data=test_set, columns=['Query', 'Doc', 'Pos/Neg"'])
+        df = DataFrame(data=test_set, columns=['Query', 'Doc', 'Pos/Neg'])
         return df

@@ -56,12 +56,12 @@ class CNNModel(Module):
 
 
 class CNNRanker(NNRanker):
-    def __init__(self):
-        super(CNNRanker, self).__init__()
+    def __init__(self, args):
+        super(CNNRanker, self).__init__(args)
         self.model = CNNModel()
         self.model.to('cpu')
 
-    def fit(self, M):
+    def fit(self, similarities, labels):
         # initialize our optimizer and loss function
         opt = Adam(self.model.parameters(), lr=self.args.lr)
         lossFn = NLLLoss()
@@ -85,9 +85,9 @@ class CNNRanker(NNRanker):
             trainCorrect = 0
             valCorrect = 0
             # loop over the training set
-            for (x, y) in M:
+            for i in range(labels):
                 # send the input to the device
-                (x, y) = (x.to('cpu'), y.to('cpu'))
+                (x, y) = (similarities[i].to('cpu'), labels[i].to('cpu'))
                 # perform a forward pass and calculate the training loss
                 pred = self.model(x)
                 loss = lossFn(pred, y)

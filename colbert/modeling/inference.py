@@ -63,7 +63,7 @@ class ModelInference():
         input_ids, attention_mask = self.doc_tokenizer.tensorize(docs)
         return self.doc(input_ids, attention_mask, keep_dims=keep_dims)
 
-    def score(self, Q, D, mask=None, lengths=None, explain=False):
+    def scores_matrix(self, Q, D, mask=None, lengths=None):
         if lengths is not None:
             assert mask is None, "don't supply both mask and lengths"
 
@@ -71,6 +71,11 @@ class ModelInference():
             mask = mask.unsqueeze(0) <= lengths.to(DEVICE).unsqueeze(-1)
 
         scores = (D @ Q)
+        scores = scores if mask is None else scores * mask.unsqueeze(-1)
+        return scores
+
+    def score(self, Q, D, mask=None, lengths=None, explain=False):
+        scores = self.scores_matrix(Q, D, mask, lengths)
 
         if self.colbert.similarity_metric == 'cnn':
             return self.cnn.predict(scores)
@@ -78,12 +83,9 @@ class ModelInference():
         if self.colbert.similarity_metric == 'gnn':
             return self.gnn.predict(scores)
 
-        scores = scores if mask is None else scores * mask.unsqueeze(-1)
         scores = scores.max(1)
-
         if explain:
             assert False, "TODO"
-
         return scores.values.sum(-1).cpu()
 
 
