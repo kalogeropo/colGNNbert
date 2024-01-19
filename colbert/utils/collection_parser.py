@@ -1,5 +1,5 @@
-from os.path import join, exists
 from os import getcwd
+from os.path import join, exists
 
 from pandas import read_csv, DataFrame
 
@@ -46,22 +46,21 @@ def get_retrieved_from_file(retrieved_tsv='experiments/cystic_2385/retrieve.py/2
 
 
 def retrieved_and_rel_parser(tsv_list=None):
-    dict ={}
+    dict = {}
     if tsv_list is None:
         tsv_list = []
         return 0
-    #print(tsv_list)
+    # print(tsv_list)
     prev_id = tsv_list[0][0]
     lst = []
     for item in tsv_list:
         lst.append(item[1])
         if item[0] != prev_id:
             dict[item[0]] = lst
-            lst =[]
+            lst = []
         prev_id = item[0]
-    #print(dict.keys())
+    # print(dict.keys())
     return dict
-
 
 
 class Collection:
@@ -101,10 +100,9 @@ class Collection:
         else:
             print(f'file {join(getcwd(), doc_tsv)} does not exist')
             self.docs = []
-        self.train_test_set = self.create_set()
         self.name = name
-        self.path = join(getcwd(), col_path)
 
+        self.path = join(getcwd(), col_path)
         if exists(self.path):
             self.num_docs = len(self.docs)
         else:

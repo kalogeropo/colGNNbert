@@ -4,11 +4,20 @@ from colbert.modeling.colbert import ColBERT
 from colbert.modeling.tokenization import QueryTokenizer, DocTokenizer
 from colbert.utils.amp import MixedPrecisionManager
 from colbert.parameters import DEVICE
+from colbert.nn.cnn_ranker import CNNRanker
+from colbert.nn.gnn_ranker import GNNRanker
 
 
 class ModelInference():
     def __init__(self, colbert: ColBERT, amp=False):
         assert colbert.training is False
+
+        self.cnn = None
+        if self.colbert.similarity_metric == 'cnn':
+            self.gnn = CNNRanker.load()
+        self.gnn = None
+        if self.colbert.similarity_metric == 'gnn':
+            self.gnn = GNNRanker.load()
 
         self.colbert = colbert
         self.query_tokenizer = QueryTokenizer(colbert.query_maxlen)
@@ -62,6 +71,13 @@ class ModelInference():
             mask = mask.unsqueeze(0) <= lengths.to(DEVICE).unsqueeze(-1)
 
         scores = (D @ Q)
+
+        if self.colbert.similarity_metric == 'cnn':
+            return self.cnn.predict(scores)
+
+        if self.colbert.similarity_metric == 'gnn':
+            return self.gnn.predict(scores)
+
         scores = scores if mask is None else scores * mask.unsqueeze(-1)
         scores = scores.max(1)
 

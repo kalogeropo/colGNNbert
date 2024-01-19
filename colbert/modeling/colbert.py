@@ -4,7 +4,6 @@ import torch.nn as nn
 
 from transformers import BertPreTrainedModel, BertModel, BertTokenizerFast
 from colbert.parameters import DEVICE
-from colbert.gnn.ranker import GNNRanker
 
 
 class ColBERT(BertPreTrainedModel):
@@ -15,9 +14,6 @@ class ColBERT(BertPreTrainedModel):
         self.query_maxlen = query_maxlen
         self.doc_maxlen = doc_maxlen
         self.similarity_metric = similarity_metric
-        self.gnn = None
-        if self.similarity_metric == 'gnn':
-            self.gnn = GNNRanker.load()
         self.dim = dim
 
         self.mask_punctuation = mask_punctuation
@@ -63,9 +59,6 @@ class ColBERT(BertPreTrainedModel):
     def score(self, Q, D):
         if self.similarity_metric == 'cosine':
             return (Q @ D.permute(0, 2, 1)).max(2).values.sum(1)
-
-        if self.similarity_metric == 'gnn':
-            return self.gnn.predict(Q @ D.permute(0, 2, 1))
 
         assert self.similarity_metric == 'l2'
         return (-1.0 * ((Q.unsqueeze(2) - D.unsqueeze(1))**2).sum(-1)).max(-1).values.sum(-1)
