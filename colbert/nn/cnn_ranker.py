@@ -85,6 +85,7 @@ class CNNRanker(NNRanker):
 
             self._fit(train_data_loader)
             self._validation(val_data_loader)
+            self._training_info(e + 1)
 
     def _fit(self, train_data_loader):
         # loop over the training set

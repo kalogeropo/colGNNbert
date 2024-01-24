@@ -13,7 +13,6 @@ def main():
 
     parser.add_model_parameters()
     parser.add_model_inference_parameters()
-    parser.add_model_training_parameters()
     parser.add_nn_training_parameters()
     parser.add_nn_training_input()
 
