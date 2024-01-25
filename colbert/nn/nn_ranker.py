@@ -1,34 +1,53 @@
 import time
 
+import pandas as pd
 import torch
 from torch.utils.data import DataLoader
 from torch.utils.data import Dataset
 from torch.utils.data import random_split
 
-from colbert.modeling.inference import ModelInference
-from colbert.utils.collection_parser import Collection
+
+def load_nn_ranker(path=None):
+    if path is None:
+        return torch.load('./nn_ranker')
+    else:
+        return torch.load(path)
 
 
 class TripletsDataset(Dataset):
-    def __init__(self, collection, inference):
+    def __init__(self, collection, inference, bsize):
         self.collection = collection
         self.inference = inference
+        self.bsize = bsize
         self.similarities, self.labels = self._parse_triplets()
 
     def _parse_triplets(self):
-        def create_similarities_matrix(q, d):
-            q = self.inference.queryFromText(q)
-            d = self.inference.docFromText(d)
-            return self.inference.scores_matrix(q, d)
-
+        print('[INFO] reading triplets tsv file...')
         triplets = self.collection.create_set()
-        return triplets[['Query', 'Doc']].agg(create_similarities_matrix, axis='columns'), triplets['Pos/Neg']
+        print('[INFO] creating queries tensors...')
+        q = self.inference.queryFromText(triplets['Query'].tolist(), self.bsize, True).permute(0, 2, 1)
+        print('[INFO] creating documents tensors...')
+        d = self.inference.queryFromText(triplets['Doc'].tolist(), self.bsize, True)
+        print('[INFO] calculating the normalized similarities matrices...')
+        m = pd.DataFrame({'Q': list(q), 'D': list(d)}).agg(self._create_normalized_scores, axis='columns')
+        return m.tolist(), triplets['Pos/Neg'].tolist()
+
+    def _create_normalized_scores(self, r):
+        x = self.inference.scores_matrix(r[0], r[1])
+        x = torch.add(x, 1)
+        x = torch.div(x, 2)
+        return x.view(1, x.shape[0], x.shape[1])
+
+    def hw(self):
+        if len(self.similarities):
+            return self.similarities[0].shape[1], self.similarities[0].shape[2]
+        return 0, 0
 
     def __len__(self):
         return len(self.labels)
 
     def __getitem__(self, idx):
-        return self.similarities.iloc[idx], self.labels[idx]
+        return self.similarities[idx], self.labels[idx]
 
 
 class NNRanker:
@@ -37,7 +56,7 @@ class NNRanker:
         self.collection = None
         self.inference = None
         self.model = None
-        self.train_split = 0.75
+        self.train_split = 0.9
         self.train_len = 0
         self.val_len = 0
         self.train_steps = 0
@@ -68,30 +87,37 @@ class NNRanker:
             print('Val loss: {:.6f}, Val accuracy: {:.4f}\n'.format(avg_val_loss, val_accuracy))
 
     def train(self, save=True, path=None):
+        from colbert.modeling.inference import ModelInference
+        from colbert.utils.collection_parser import Collection
+
         self.collection = Collection(triplets_tsv=self.args.triples)
         self.inference = ModelInference(self.args.colbert, amp=self.args.amp)
-        triplets_dataset = TripletsDataset(self.collection, self.inference)
+        print('[INFO] creating triplets dataset...')
+        triplets_dataset = TripletsDataset(self.collection, self.inference, self.args.bsize)
+        h, w = triplets_dataset.hw()
 
         dataset_len = len(triplets_dataset)
         self.train_len = int(dataset_len * self.train_split)
-        self.val_len = int(dataset_len * (1 - self.train_split))
-        (train_x, val_x) = random_split(triplets_dataset, [self.train_len, self.val_len],
-                                        generator=torch.Generator().manual_seed(42))
+        self.val_len = dataset_len - self.train_len
+        print('[INFO] splitting dataset to training/validation...')
+        (train, val) = random_split(triplets_dataset, [self.train_len, self.val_len],
+                                    generator=torch.Generator().manual_seed(42))
 
-        train_data_loader = DataLoader(train_x, shuffle=True, batch_size=self.args.bsize)
-        val_data_loader = DataLoader(val_x, batch_size=self.args.bsize)
+        print('[INFO] creating torch data loaders...')
+        train_data_loader = DataLoader(train, shuffle=True, batch_size=self.args.bsize)
+        val_data_loader = DataLoader(val, batch_size=self.args.bsize)
 
-        self.train_steps = len(train_data_loader.dataset) // self.args.bsize
-        self.val_steps = len(val_data_loader.dataset) // self.args.bsize
+        self.train_steps = self.train_len // self.args.bsize
+        self.val_steps = self.val_len // self.args.bsize
 
         print('[INFO] training the network...')
         start_time = time.time()
-        self.fit(train_data_loader, val_data_loader)
+        self.fit(train_data_loader, val_data_loader, h, w)
         print('[INFO] total time taken to train the model: {:.2f}s'.format(time.time() - start_time))
         if save:
             self.save(path)
 
-    def fit(self, train_loader, val_loader):
+    def fit(self, train_loader, val_loader, h=None, w=None):
         pass
 
     def predict(self, x, path=None):
@@ -102,10 +128,3 @@ class NNRanker:
             torch.save(self.model, './nn_ranker')
         else:
             torch.save(self.model, path)
-
-    @staticmethod
-    def load(path=None):
-        if path is None:
-            return torch.load('./nn_ranker')
-        else:
-            return torch.load(path)

@@ -43,8 +43,9 @@ class Arguments():
         self.add_argument('--amp', dest='amp', default=False, action='store_true')
 
     def add_nn_training_parameters(self):
-        self.add_argument('--cnn', dest='cnn', default=False)
-        self.add_argument('--gnn', dest='gnn', default=False)
+        self.add_argument('--cnn', dest='cnn', default=False, action='store_true')
+        self.add_argument('--gnn', dest='gnn', default=False, action='store_true')
+        self.add_argument('--lr', dest='lr', default=1e-3, type=float)
 
         def check_nn_training_type(args):
             assert args.cnn or args.gnn, "Specify NN type (--cnn or --gnn)"
@@ -70,13 +71,13 @@ class Arguments():
 
     def add_nn_training_input(self):
         self.add_argument('--triples', dest='triples', required=True)
-        self.add_argument('--epochs', dest='epochs', default=0)
+        self.add_argument('--epochs', dest='epochs', type=int, default=0)
 
         def check_nn_training_input(args):
             if args.cnn or args.gnn:
                 assert args.epochs > 0
             if args.cnn or args.gnn:
-                assert args.relative is not None
+                assert args.triples is not None
 
         self.checks.append(check_nn_training_input)
 

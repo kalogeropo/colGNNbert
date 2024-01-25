@@ -4,8 +4,7 @@ from colbert.modeling.colbert import ColBERT
 from colbert.modeling.tokenization import QueryTokenizer, DocTokenizer
 from colbert.utils.amp import MixedPrecisionManager
 from colbert.parameters import DEVICE
-from colbert.nn.cnn_ranker import CNNRanker
-from colbert.nn.gnn_ranker import GNNRanker
+from colbert.nn.nn_ranker import load_nn_ranker
 
 
 class ModelInference():
@@ -13,11 +12,11 @@ class ModelInference():
         assert colbert.training is False
 
         self.cnn = None
-        if self.colbert.similarity_metric == 'cnn':
-            self.gnn = CNNRanker.load()
+        if colbert.similarity_metric == 'cnn':
+            self.gnn = load_nn_ranker()
         self.gnn = None
-        if self.colbert.similarity_metric == 'gnn':
-            self.gnn = GNNRanker.load()
+        if colbert.similarity_metric == 'gnn':
+            self.gnn = load_nn_ranker()
 
         self.colbert = colbert
         self.query_tokenizer = QueryTokenizer(colbert.query_maxlen)

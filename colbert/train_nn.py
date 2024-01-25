@@ -18,8 +18,6 @@ def main():
 
     args = parser.parse()
 
-    args.lazy = args.collection is not None
-
     with Run.context():
         args.colbert, args.checkpoint = load_colbert(args)
 

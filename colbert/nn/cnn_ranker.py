@@ -8,26 +8,34 @@ from torch.nn import NLLLoss
 from torch.nn import ReLU
 from torch.optim import Adam
 
-from colbert.nn.nn_ranker import NNRanker
+from colbert.nn.nn_ranker import NNRanker, load_nn_ranker
 
 
 class CNNModel(Module):
-    def __init__(self):
+    def __init__(self, h, w):
         # call the parent constructor
         super(CNNModel, self).__init__()
 
         # initialize first set of CONV => RELU => POOL layers
         self.conv1 = Conv2d(in_channels=1, out_channels=20, kernel_size=(5, 5))
+        h = CNNModel.calculate_output_shape(h, 5)
+        w = CNNModel.calculate_output_shape(w, 5)
         self.relu1 = ReLU()
         self.maxpool1 = MaxPool2d(kernel_size=(2, 2), stride=(2, 2))
+        h = CNNModel.calculate_output_shape(h, 2, stride=2)
+        w = CNNModel.calculate_output_shape(w, 2, stride=2)
 
         # initialize second set of CONV => RELU => POOL layers
         self.conv2 = Conv2d(in_channels=20, out_channels=50, kernel_size=(5, 5))
+        h = CNNModel.calculate_output_shape(h, 5)
+        w = CNNModel.calculate_output_shape(w, 5)
         self.relu2 = ReLU()
         self.maxpool2 = MaxPool2d(kernel_size=(2, 2), stride=(2, 2))
+        h = CNNModel.calculate_output_shape(h, 2, stride=2)
+        w = CNNModel.calculate_output_shape(w, 2, stride=2)
 
         # initialize first (and only) set of FC => RELU layers
-        self.fc1 = Linear(in_features=800, out_features=500)
+        self.fc1 = Linear(in_features=(h * w * 50), out_features=500)
         self.relu3 = ReLU()
 
         # initialize our softmax classifier
@@ -55,6 +63,12 @@ class CNNModel(Module):
         output = self.logSoftmax(x)
         return output
 
+    @staticmethod
+    def calculate_output_shape(x, kernel_size, stride=1, padding=0, dilation=1):
+        x += 2 * padding - dilation * (kernel_size - 1) - 1
+        x /= stride
+        return int(x + 1)
+
 
 class CNNRanker(NNRanker):
     def __init__(self, args):
@@ -63,8 +77,8 @@ class CNNRanker(NNRanker):
         self.loss = None
         self.optimizer = None
 
-    def fit(self, train_data_loader, val_data_loader):
-        self.model = CNNModel()
+    def fit(self, train_data_loader, val_data_loader, h, w):
+        self.model = CNNModel(h, w)
         self.model.to('cpu')
         # initialize our optimizer and loss function
         self.optimizer = Adam(self.model.parameters(), lr=self.args.lr)
@@ -126,10 +140,10 @@ class CNNRanker(NNRanker):
 
     def predict(self, similarities, path=None):
         if self.model is None:
-            self.model = NNRanker.load(path)
+            self.model = load_nn_ranker(path)
             self.model.to('cpu')
         # switch off autograd
         with torch.no_grad():
             x = similarities.to('cpu')
             pred = self.model(x)
-            #return pred.argmax(axis=1).cpu().numpy()[0]
+            return pred[:, 1]
