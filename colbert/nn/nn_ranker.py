@@ -21,15 +21,20 @@ class TripletsDataset(Dataset):
         self.bsize = bsize
         self.similarities, self.labels = self._parse_triplets()
 
-    def _parse_triplets(self):
+    def _parse_triplets(self, saveDataset=False):
         print('[INFO] reading triplets tsv file...')
         triplets = self.collection.create_set()
         print('[INFO] creating queries tensors...')
         q = self.inference.queryFromText(triplets['Query'].tolist(), self.bsize, True).permute(0, 2, 1)
         print('[INFO] creating documents tensors...')
-        d = self.inference.queryFromText(triplets['Doc'].tolist(), self.bsize, True)
+        d = self.inference.docFromText(triplets['Doc'].tolist(), self.bsize, True)
         print('[INFO] calculating the normalized similarities matrices...')
         m = pd.DataFrame({'Q': list(q), 'D': list(d)}).agg(self._create_normalized_scores, axis='columns')
+        if saveDataset:
+            s = pd.DataFrame()
+            s['features'] = m.map(lambda x: x.tolist()[0])
+            s['label'] = triplets['Pos/Neg']
+            s.to_csv('tensors.csv', index=False)
         return m.tolist(), triplets['Pos/Neg'].tolist()
 
     def _create_normalized_scores(self, r):
@@ -56,7 +61,7 @@ class NNRanker:
         self.collection = None
         self.inference = None
         self.model = None
-        self.train_split = 0.9
+        self.train_split = 0.8
         self.train_len = 0
         self.val_len = 0
         self.train_steps = 0
@@ -101,7 +106,7 @@ class NNRanker:
         self.val_len = dataset_len - self.train_len
         print('[INFO] splitting dataset to training/validation...')
         (train, val) = random_split(triplets_dataset, [self.train_len, self.val_len],
-                                    generator=torch.Generator().manual_seed(42))
+                                    generator=torch.Generator().manual_seed(1234))
 
         print('[INFO] creating torch data loaders...')
         train_data_loader = DataLoader(train, shuffle=True, batch_size=self.args.bsize)

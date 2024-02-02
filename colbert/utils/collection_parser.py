@@ -27,10 +27,18 @@ def get_rel_from_file(relevant_tsv):
     list_to_group_by = []
     with open(relevant_tsv, 'r') as f:
         lines = f.readlines()
+        prev_index = -1
+        temp = []
         for line in lines:
             line = line.split(',')
-            list_to_group_by.append([int(line[1]), int(line[3].replace(">", ""))])
-    # print(list_to_group_by)
+            cur_index = int(line[1])
+            if prev_index != cur_index:
+                temp =[]
+                list_to_group_by.append(temp)
+                prev_index = cur_index
+            #print(line)
+            temp.append(int(line[3].replace(">", "")))
+    print(len(list_to_group_by))
     return list_to_group_by
 
 
