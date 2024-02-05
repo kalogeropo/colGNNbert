@@ -1,7 +1,7 @@
 import torch
 from torch.nn import Conv2d
 from torch.nn import Linear
-from torch.nn import LogSoftmax
+from torch.nn import Softmax
 from torch.nn import MaxPool2d
 from torch.nn import Module
 from torch.nn import NLLLoss
@@ -35,12 +35,12 @@ class CNNModel(Module):
         w = CNNModel.calculate_output_shape(w, 2, stride=2)
 
         # initialize first (and only) set of FC => RELU layers
-        self.fc1 = Linear(in_features=(h * w * 50), out_features=500)
+        self.fc1 = Linear(in_features=(h * w * 50), out_features=1000)
         self.relu3 = ReLU()
 
         # initialize our softmax classifier
-        self.fc2 = Linear(in_features=500, out_features=2)
-        self.logSoftmax = LogSoftmax(dim=1)
+        self.fc2 = Linear(in_features=1000, out_features=2)
+        self.logSoftmax = Softmax(dim=1)
 
     def forward(self, x):
         # pass the input through our first set of CONV => RELU => POOL layers
