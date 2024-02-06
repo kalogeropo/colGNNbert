@@ -9,7 +9,7 @@ from torch.utils.data import Dataset
 class CustomDataset(Dataset):
     def __init__(self, path='tensors.csv'):
         images_df = pd.read_csv(path)
-        self.features = images_df['features'].map(lambda x: torch.Tensor(ast.literal_eval(x)))
+        self.features = images_df['features'].map(lambda x: torch.Tensor([ast.literal_eval(x)]))
         self.labels = images_df['label']
         assert len(self.features) == len(self.labels), f"image list and labels have different sizes"
         print(f"Loaded {len(self.labels)} images from ColBERT Dataset")
@@ -21,7 +21,7 @@ class CustomDataset(Dataset):
         return self.features[index], self.labels[index]
 
     def calc_init_h_w(self):
-        return self.features[0].shape[0], self.features[0].shape[1]
+        return self.features[0].shape[1], self.features[0].shape[2]
 
 
 class CNNModel(Module):
