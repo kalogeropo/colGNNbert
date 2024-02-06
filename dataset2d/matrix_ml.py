@@ -93,7 +93,7 @@ if __name__ == '__main__':
             # set the model in evaluation mode
             model.eval()
             # loop over the validation set
-            for (x, y) in validation_set:
+            for (x, y) in validation_loader:
                 # send the input to the device
                 (x, y) = (x.to(device), y.to(device))
 
