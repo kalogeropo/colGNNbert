@@ -80,7 +80,7 @@ class CNNRanker(NNRanker):
     def fit(self, train_data_loader, val_data_loader, h, w):
         self.model = CNNModel(h, w)
         self.model.to('cpu')
-        # initialize our optimizer and loss function
+        # initialize our optimizer and loss_fun function
         self.optimizer = Adam(self.model.parameters(), lr=self.args.lr)
         self.loss = NLLLoss()
 
@@ -89,7 +89,7 @@ class CNNRanker(NNRanker):
             # set the model in training mode
             self.model.train()
 
-            # initialize the total training and validation loss
+            # initialize the total training and validation loss_fun
             self.total_train_loss = 0
             self.total_val_loss = 0
 

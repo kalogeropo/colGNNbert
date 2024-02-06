@@ -11,6 +11,25 @@ BSIZE = 32
 SHUFFLE = True
 LEARNING_RATE = 0.001
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+metrics = {'train_loss': [], 'train_acc': [], 'val_loss': [], 'val_acc': []}
+
+
+def training_info(epoch=0):
+    avg_train_loss = total_train_loss / train_steps
+    # avg_val_loss = self.total_val_loss / self.val_steps
+    # calculate the training and validation accuracy
+    train_accuracy = train_correct / train_len
+    # val_accuracy = self.val_correct / self.val_len
+
+    # update our training history
+    metrics['train_loss'].append(avg_train_loss.cpu().detach().numpy())
+    metrics['train_acc'].append(train_accuracy)
+    # metrics['val_loss'].append(avg_val_loss.cpu().detach().numpy())
+    # metrics['val_acc'].append(val_accuracy)
+    if epoch > 0:
+        print('[INFO] EPOCH: {}/{}'.format(epoch, NUM_EPOCHS))
+        print('Train loss: {:.6f}, Train accuracy: {:.4f}'.format(avg_train_loss, train_accuracy))
+        # print('Val loss: {:.6f}, Val accuracy: {:.4f}\n'.format(avg_val_loss, val_accuracy))
 
 
 def split_dataset(dataset, ratio):
@@ -41,7 +60,7 @@ if __name__ == '__main__':
     model.to(device)
     optimizer = Adam(model.parameters(), lr=LEARNING_RATE)
     lossFn = NLLLoss()
-
+    epoch_train_acc = []
     # loop over our epochs
     for e in range(0, NUM_EPOCHS):
         print(e)
@@ -68,7 +87,6 @@ if __name__ == '__main__':
             # add the loss to the total training loss so far and calculate the number of correct predictions
             total_train_loss += loss
             train_correct += (pred.argmax(1) == y).type(torch.float).sum().item()
-
-            # _fit(train_data_loader)
-            # self._validation(val_data_loader)
-            # self._training_info(e + 1)
+            train_accuracy = train_correct / train_len
+            # val_accuracy = val_correct / val_len
+        training_info(e + 1)
