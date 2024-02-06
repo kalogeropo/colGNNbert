@@ -1,8 +1,6 @@
 import ast
-import torchvision.transforms as transforms
 
 import pandas as pd
-
 import torch
 from torch.nn import Module, Conv2d, ReLU, MaxPool2d, Linear, Softmax
 from torch.utils.data import Dataset
@@ -11,19 +9,19 @@ from torch.utils.data import Dataset
 class CustomDataset(Dataset):
     def __init__(self, path='tensors.csv'):
         images_df = pd.read_csv(path)
-        self.features = images_df['features'].map(ast.literal_eval).map(torch.Tensor)
+        self.features = images_df['features'].map(lambda x: torch.Tensor(ast.literal_eval(x)))
         self.labels = images_df['label']
         assert len(self.features) == len(self.labels), f"image list and labels have different sizes"
-        print(f"Loaded {len(self.features)} images from ColBERT Dataset")
+        print(f"Loaded {len(self.labels)} images from ColBERT Dataset")
 
     def __len__(self):
-        return len(self.features)
+        return len(self.labels)
 
     def __getitem__(self, index):
         return self.features[index], self.labels[index]
 
-    def calc_init_w_h(self):
-        return self.features[0].size
+    def calc_init_h_w(self):
+        return self.features[0].shape[0], self.features[0].shape[1]
 
 
 class CNNModel(Module):

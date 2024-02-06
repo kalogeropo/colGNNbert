@@ -25,7 +25,7 @@ def split_dataset(dataset, ratio):
 if __name__ == '__main__':
     # Initialize Data set
     image_custom_set = CustomDataset()
-    w, h = image_custom_set.calc_init_w_h()
+    h, w = image_custom_set.calc_init_h_w()
 
     # set the model in training mode
     train_set, validation_set, train_len, val_len = split_dataset(image_custom_set, TRAIN_SPLIT)
