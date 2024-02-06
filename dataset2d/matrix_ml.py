@@ -15,7 +15,7 @@ LEARNING_RATE = 0.001
 
 # Initialize Data set
 image_custom_set = CustomDataset()
-w, h = image_custom_set.validate_images()
+w, h = image_custom_set.calc_init_w_h()
 
 # set the model in training mode
 train_set, validation_set, train_len, val_len = split_dataset(image_custom_set, TRAIN_SPLIT)
