@@ -1,7 +1,7 @@
 from torch.nn import NLLLoss
 from torch.optim import Adam
 
-from image_cnn import CustomDataset, CNNModel , split_dataset
+from image_cnn import CustomDataset, CNNModel, split_dataset
 
 import torch
 import torch.nn as nn
@@ -15,16 +15,13 @@ LEARNING_RATE = 0.001
 
 # Initialize Data set
 image_custom_set = CustomDataset()
-w,h = image_custom_set.validate_images()
+w, h = image_custom_set.validate_images()
 
 # set the model in training mode
-train_set, validation_set, train_len, val_len = split_dataset(image_custom_set,TRAIN_SPLIT)
+train_set, validation_set, train_len, val_len = split_dataset(image_custom_set, TRAIN_SPLIT)
 
 train_loader = DataLoader(dataset=train_set, shuffle=SHUFFLE, batch_size=BSIZE)
 validation_loader = DataLoader(dataset=validation_set, shuffle=SHUFFLE, batch_size=BSIZE)
-# for i in train_loader:
-#     print(i)
-#     print("--------------------------")
 
 
 train_steps = train_len // BSIZE
@@ -32,7 +29,7 @@ val_steps = val_len // BSIZE
 
 print(train_steps, val_steps)
 
-model = CNNModel(w,h)
+model = CNNModel(h, w)
 
 optimizer = Adam(model.parameters(), lr=LEARNING_RATE)
 loss = NLLLoss()
@@ -45,14 +42,13 @@ for e in range(0, NUM_EPOCHS):
     total_val_loss = 0
 
     model.train()
-    print()
     # initialize the number of correct predictions in the training and validation step
     train_correct = 0
     val_correct = 0
     for (x, y) in train_loader:
         # send the input to the device
-        # (x, y) = (x.to('cpu'), y.to('cpu'))
-        print(x,y)
+        (x, y) = (x.to('cpu'), y.to('cpu'))
+        print(x, y)
         # perform a forward pass and calculate the training loss
         pred = model(x)
         loss = loss(pred, y)
@@ -69,4 +65,3 @@ for e in range(0, NUM_EPOCHS):
         # _fit(train_data_loader)
         # self._validation(val_data_loader)
         # self._training_info(e + 1)
-

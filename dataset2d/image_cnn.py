@@ -1,3 +1,4 @@
+import ast
 from os import listdir, getcwd
 from os.path import isdir, join
 import torchvision.transforms as transforms
@@ -23,20 +24,20 @@ def split_dataset(dataset, ratio):
 
 def read_set():
     # Get image files paths
-    dirs = [name for name in listdir(".") if isdir(name)]
-    cwd = getcwd()
-
-    image_dir = join(cwd, dirs[1])
-
-    images = [join(image_dir, f) for f in listdir(image_dir)]
-    images = sorted(images, key=len)
+    # dirs = [name for name in listdir(".") if isdir(name)]
+    # cwd = getcwd()
+    #
+    # image_dir = join(cwd, dirs[1])
+    #
+    # images = [join(image_dir, f) for f in listdir(image_dir)]
+    # images = sorted(images, key=len)
 
     # Load images into lists
 
-    img_vecs = []
-    for path in images:
-        img = Image.open(path)
-        img_vecs.append(img)
+    # img_vecs = []
+    # for path in images:
+    #     img = Image.open(path)
+    #     img_vecs.append(img)
     # print(len(img_vecs))
     # img_vecs[0].show()
     with open('labels.csv') as f:
@@ -44,31 +45,35 @@ def read_set():
         data = [int(i) for i in reader]
     # print(len(data))
     # Create dataframe of paths images and labels
-    dict_to_df = {"img_path": images, "label": data, "img_vec": img_vecs}
-    df = pd.DataFrame(dict_to_df)
+    # dict_to_df = {"img_path": images, "label": data, "img_vec": img_vecs}
+    # df = pd.DataFrame(dict_to_df)
     # print(df.head())
-    assert len(img_vecs) == len(data) == len(images), f"image list and labels have different sizes"
-    return img_vecs, data, len(img_vecs)
+    image_tensors = pd.read_csv('tensors.csv')
+    # print(type(image_tensors['features'][0]))
+    features = image_tensors['features'].map(ast.literal_eval)
+    assert len(data) == len(image_tensors), f"image list and labels have different sizes"
+    return features, data, len(image_tensors)
 
 
 class CustomDataset(Dataset):
     def __init__(self, transform=transforms.ToTensor()):
         self.transform = transform
-        self.images, self.labels, self.length = read_set()
-        print(f"Loaded {len(self.images)} images from ColBERT Dataset")
+        self.tensors, self.labels, self.length = read_set()
+        print(f"Loaded {len(self.tensors)} images from ColBERT Dataset")
 
     def __len__(self):
         return self.length
 
     def __getitem__(self, index):
-        image = self.transform(self.images[index])
+        #image = self.transform(self.tensors[index])
+        image = self.tensors[index]
         return image, self.labels[index]
 
     def validate_images(self):
-        assert len(self.images) == len(self.labels), f"images and labels have different sizes"
-        for i, _ in enumerate(self.images):
-            assert self.images[0].size == self.images[i].size, f"images have different sizes"
-        w, h = self.images[0].size
+        assert len(self.tensors) == len(self.labels), f"images and labels have different sizes"
+        for i, _ in enumerate(self.tensors):
+            assert len(self.tensors[0]) == len(self.tensors[i]), f"images have different sizes"
+        w, h = self.tensors[0].size
         return w, h
 
 
