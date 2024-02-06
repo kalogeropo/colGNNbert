@@ -10,6 +10,7 @@ TRAIN_SPLIT = 0.9
 BSIZE = 32
 SHUFFLE = True
 LEARNING_RATE = 0.001
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 
 def split_dataset(dataset, ratio):
@@ -37,8 +38,9 @@ if __name__ == '__main__':
     print(train_steps, val_steps)
 
     model = CNNModel(h, w)
+    model.to(device)
     optimizer = Adam(model.parameters(), lr=LEARNING_RATE)
-    loss = NLLLoss()
+    lossFn = NLLLoss()
 
     # loop over our epochs
     for e in range(0, NUM_EPOCHS):
@@ -53,11 +55,10 @@ if __name__ == '__main__':
         val_correct = 0
         for (x, y) in train_loader:
             # send the input to the device
-            (x, y) = (x.to('cpu'), y.to('cpu'))
-            print(x, y)
+            (x, y) = (x.to(device), y.to(device))
             # perform a forward pass and calculate the training loss
             pred = model(x)
-            loss = loss(pred, y)
+            loss = lossFn(pred, y)
 
             # zero out the gradients, perform the backpropagation step and update the weights
             optimizer.zero_grad()
