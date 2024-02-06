@@ -54,7 +54,6 @@ if __name__ == '__main__':
 
     train_steps = train_len // BSIZE
     val_steps = val_len // BSIZE
-    print(train_steps, val_steps)
 
     model = CNNModel(h, w)
     model.to(device)
@@ -63,7 +62,7 @@ if __name__ == '__main__':
     epoch_train_acc = []
     # loop over our epochs
     for e in range(0, NUM_EPOCHS):
-        print(e)
+
         # initialize the total training and validation loss
         total_train_loss = 0
         total_val_loss = 0
