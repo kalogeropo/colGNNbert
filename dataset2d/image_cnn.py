@@ -69,10 +69,7 @@ class CustomDataset(Dataset):
         image = self.tensors[index]
         return image, self.labels[index]
 
-    def validate_images(self):
-        assert len(self.tensors) == len(self.labels), f"images and labels have different sizes"
-        for i, _ in enumerate(self.tensors):
-            assert len(self.tensors[0]) == len(self.tensors[i]), f"images have different sizes"
+    def calc_init_w_h(self):
         w, h = self.tensors[0].size
         return w, h
 
