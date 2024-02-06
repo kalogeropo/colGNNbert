@@ -16,20 +16,20 @@ metrics = {'train_loss': [], 'train_acc': [], 'val_loss': [], 'val_acc': []}
 
 def training_info(epoch=0):
     avg_train_loss = total_train_loss / train_steps
-    # avg_val_loss = self.total_val_loss / self.val_steps
+    avg_val_loss = total_val_loss / val_steps
     # calculate the training and validation accuracy
     train_accuracy = train_correct / train_len
-    # val_accuracy = self.val_correct / self.val_len
+    val_accuracy = val_correct / val_len
 
     # update our training history
     metrics['train_loss'].append(avg_train_loss.cpu().detach().numpy())
     metrics['train_acc'].append(train_accuracy)
-    # metrics['val_loss'].append(avg_val_loss.cpu().detach().numpy())
-    # metrics['val_acc'].append(val_accuracy)
+    metrics['val_loss'].append(avg_val_loss.cpu().detach().numpy())
+    metrics['val_acc'].append(val_accuracy)
     if epoch > 0:
         print('[INFO] EPOCH: {}/{}'.format(epoch, NUM_EPOCHS))
         print('Train loss: {:.6f}, Train accuracy: {:.4f}'.format(avg_train_loss, train_accuracy))
-        # print('Val loss: {:.6f}, Val accuracy: {:.4f}\n'.format(avg_val_loss, val_accuracy))
+        print('Val loss: {:.6f}, Val accuracy: {:.4f}\n'.format(avg_val_loss, val_accuracy))
 
 
 def split_dataset(dataset, ratio):
@@ -89,4 +89,18 @@ if __name__ == '__main__':
             train_correct += (pred.argmax(1) == y).type(torch.float).sum().item()
             train_accuracy = train_correct / train_len
             # val_accuracy = val_correct / val_len
+        with torch.no_grad():
+            # set the model in evaluation mode
+            model.eval()
+            # loop over the validation set
+            for (x, y) in validation_set:
+                # send the input to the device
+                (x, y) = (x.to(device), y.to(device))
+
+                # make the predictions and calculate the validation loss
+                pred = model(x)
+                total_val_loss += lossFn(pred, y)
+
+                # calculate the number of correct predictions
+                val_correct += (pred.argmax(1) == y).type(torch.float).sum().item()
         training_info(e + 1)
