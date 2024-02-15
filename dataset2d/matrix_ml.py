@@ -9,7 +9,7 @@ NUM_EPOCHS = 10
 TRAIN_SPLIT = 0.9
 BSIZE = 32
 SHUFFLE = True
-LEARNING_RATE = 0.001
+LEARNING_RATE = 0.1
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 metrics = {'train_loss': [], 'train_acc': [], 'val_loss': [], 'val_acc': []}
 

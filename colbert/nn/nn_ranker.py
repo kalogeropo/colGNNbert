@@ -21,7 +21,7 @@ class TripletsDataset(Dataset):
         self.bsize = bsize
         self.similarities, self.labels = self._parse_triplets()
 
-    def _parse_triplets(self, saveDataset=False):
+    def _parse_triplets(self, saveDataset=True):#<<<<----
         print('[INFO] reading triplets tsv file...')
         triplets = self.collection.create_set()
         print('[INFO] creating queries tensors...')

@@ -30,29 +30,33 @@ class CNNModel(Module):
         super(CNNModel, self).__init__()
 
         # initialize first set of CONV => RELU => POOL layers
-        self.conv1 = Conv2d(in_channels=1, out_channels=20, kernel_size=(5, 5))
-        h = CNNModel.calculate_output_shape(h, 5)
-        w = CNNModel.calculate_output_shape(w, 5)
+        self.conv1 = Conv2d(in_channels=1, out_channels=64, kernel_size=(4, 4))
+        h = CNNModel.calculate_output_shape(h, 4)
+        w = CNNModel.calculate_output_shape(w, 4)
         self.relu1 = ReLU()
-        self.maxpool1 = MaxPool2d(kernel_size=(2, 2), stride=(2, 2))
-        h = CNNModel.calculate_output_shape(h, 2, stride=2)
-        w = CNNModel.calculate_output_shape(w, 2, stride=2)
+        self.maxpool1 = MaxPool2d(kernel_size=(4, 4), stride=(4, 4))
+        h = CNNModel.calculate_output_shape(h, 4, stride=4)
+        w = CNNModel.calculate_output_shape(w, 4, stride=4)
 
         # initialize second set of CONV => RELU => POOL layers
-        self.conv2 = Conv2d(in_channels=20, out_channels=50, kernel_size=(5, 5))
-        h = CNNModel.calculate_output_shape(h, 5)
-        w = CNNModel.calculate_output_shape(w, 5)
+        self.conv2 = Conv2d(in_channels=64, out_channels=256, kernel_size=(4, 4))
+        h = CNNModel.calculate_output_shape(h, 4)
+        w = CNNModel.calculate_output_shape(w, 4)
         self.relu2 = ReLU()
-        self.maxpool2 = MaxPool2d(kernel_size=(2, 2), stride=(2, 2))
-        h = CNNModel.calculate_output_shape(h, 2, stride=2)
-        w = CNNModel.calculate_output_shape(w, 2, stride=2)
+        self.maxpool2 = MaxPool2d(kernel_size=(4, 4), stride=(2, 2))
+        h = CNNModel.calculate_output_shape(h, 4, stride=2)
+        w = CNNModel.calculate_output_shape(w, 4, stride=2)
 
         # initialize first (and only) set of FC => RELU layers
-        self.fc1 = Linear(in_features=(h * w * 50), out_features=1000)
+        self.fc1 = Linear(in_features=(h * w * 256), out_features=1024)
         self.relu3 = ReLU()
 
         # initialize our softmax classifier
-        self.fc2 = Linear(in_features=1000, out_features=2)
+        self.fc2 = Linear(in_features=1024, out_features=256)
+        self.relu4 = ReLU()
+
+        self.fc3 = Linear(in_features=256, out_features=2)
+
         self.logSoftmax = Softmax(dim=1)
 
     def forward(self, x):
@@ -73,6 +77,10 @@ class CNNModel(Module):
 
         # pass the output to our softmax classifier to get our output predictions
         x = self.fc2(x)
+        x = self.relu4(x)
+
+        x = self.fc3(x)
+
         output = self.logSoftmax(x)
         return output
 
